@@ -7,5 +7,5 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface PutController {
-    Resp doPut(@RequestBody Map<Object,String> map, HttpServletRequest request);
+    Resp doPut(@RequestBody Map<Object,Object> map, HttpServletRequest request);
 }

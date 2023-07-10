@@ -1,6 +1,8 @@
 package com.tr.chat.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tr.chat.controller.method.GetController;
+import com.tr.chat.controller.method.PutController;
 import com.tr.chat.entity.Resp;
 import com.tr.chat.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
-public class ContactController implements GetController {
+public class ContactController implements GetController,PutController {
     private final String path="/contact";
     private Resp resp;
     private final ContactService contactService;
@@ -24,8 +26,14 @@ public class ContactController implements GetController {
 
     @GetMapping(path)
     @Override
-    public Resp doGet(Map<Object, String> map, HttpServletRequest request) {
+    public Resp doGet(Map<Object,Object> map, HttpServletRequest request) {
         resp.success(contactService.handle(map,request),"成功");
         return resp;
+    }
+
+    @PutMapping(path)
+    @Override
+    public Resp doPut(Map<Object,Object> map, HttpServletRequest request) {
+        return (Resp) contactService.handle(map,request);
     }
 }

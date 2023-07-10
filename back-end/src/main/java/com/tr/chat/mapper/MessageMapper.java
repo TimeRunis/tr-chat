@@ -12,7 +12,6 @@ public interface MessageMapper extends BaseMapper<Message> {
     @Results(
             {
                     @Result(column = "id",property = "id"),
-                    @Result(column = "status",property = "status"),
                     @Result(column = "type",property = "type"),
                     @Result(column = "send_Time",property = "sendTime"),
                     @Result(column = "content",property = "content"),
@@ -32,7 +31,6 @@ public interface MessageMapper extends BaseMapper<Message> {
     @Results(
             {
                     @Result(column = "id",property = "id"),
-                    @Result(column = "status",property = "status"),
                     @Result(column = "type",property = "type"),
                     @Result(column = "send_Time",property = "sendTime"),
                     @Result(column = "content",property = "content"),
@@ -51,7 +49,6 @@ public interface MessageMapper extends BaseMapper<Message> {
     @Results(
             {
                     @Result(column = "id",property = "id"),
-                    @Result(column = "status",property = "status"),
                     @Result(column = "type",property = "type"),
                     @Result(column = "send_Time",property = "sendTime"),
                     @Result(column = "content",property = "content"),

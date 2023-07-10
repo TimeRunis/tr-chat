@@ -12,7 +12,6 @@ public class TrChatApplication {
         SpringApplication springApplication = new SpringApplication(TrChatApplication.class);
         ConfigurableApplicationContext configurableApplicationContext = springApplication.run(args);
         WebSocket.setApplicationContext(configurableApplicationContext);
-
     }
 
 }

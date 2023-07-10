@@ -10,7 +10,6 @@ import java.util.Date;
 @Component
 public class Message implements Serializable {
     String id;
-    String status;
     String type;
     Date sendTime;
     String content;
@@ -31,13 +30,6 @@ public class Message implements Serializable {
         this.toGroupId = toGroupId;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public Message() {
     }
@@ -118,7 +110,6 @@ public class Message implements Serializable {
     public String toString() {
         return "Message{" +
                 "id='" + id + '\'' +
-                ", status='" + status + '\'' +
                 ", type='" + type + '\'' +
                 ", sendTime=" + sendTime +
                 ", content='" + content + '\'' +

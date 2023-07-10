@@ -1,5 +1,6 @@
 package com.tr.chat.strategy.impl.contact;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tr.chat.entity.Contact;
@@ -14,23 +15,22 @@ import java.util.Map;
 
 @Component("GETOwnerStrategy")
 public class GetOwnerStrategy implements ContactStrategy {
-    @Autowired
     MessageMapper messageMapper;
 
+    @Autowired
+    public GetOwnerStrategy(MessageMapper messageMapper) {
+        this.messageMapper = messageMapper;
+    }
+
     @Override
-    public Object handle(Map<Object, String> map, HttpServletRequest request, BaseMapper<Contact> mapper) {
-        Page<Contact> page = new Page<>(Long.parseLong(map.get("current")), Long.parseLong(map.get("size")));
-        page=((ContactMapper)mapper).getPageByOwner(map.get("id"),page);
+    public Object handle(Map<Object,Object> map, HttpServletRequest request, BaseMapper<Contact> mapper) {
+        Page<Contact> page = new Page<>(Long.parseLong((String) map.get("current")), Long.parseLong((String) map.get("size")));
+        page=((ContactMapper)mapper).getPageByOwner((String) map.get("id"),page);
         for(Contact contact:page.getRecords()){
             if(contact.getGroup()!=null){
                 contact.setLastMessage(messageMapper.getGroupLastMsg(String.valueOf(contact.getGroup().getId())));
             }else if(contact.getUser()!=null){
                 contact.setLastMessage(messageMapper.getPrivateLastMsg(String.valueOf(contact.getUser().getId()),String.valueOf(contact.getOwner().getId())));
-            }
-            if(contact.getLastMessage().getType().equals("file")){
-                contact.getLastMessage().setContent("文件");
-            }else if(contact.getLastMessage().getType().equals("image")){
-                contact.getLastMessage().setContent("图片");
             }
         }
         return page;

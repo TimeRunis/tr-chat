@@ -13,7 +13,7 @@ public interface GroupUserMapper extends BaseMapper<GroupUser> {
     @Results(
             {
                     @Result(column = "user_id",property = "user",
-                            many = @Many(select = "com.tr.chat.mapper.UserMapper.getSimUserInfo")),
+                            many = @Many(select = "com.tr.chat.mapper.UserMapper.selectById")),
             }
     )
     List<GroupUser> getGroupUserByGroupId(String groupId);

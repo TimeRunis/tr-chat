@@ -1,6 +1,8 @@
 package com.tr.chat.entity;
 
-public enum RespCode {
+import java.io.Serializable;
+
+public enum RespCode implements Serializable {
     // 系统模块
     SUCCESS(0, "操作成功"),
     ERROR(-1, "操作失败"),

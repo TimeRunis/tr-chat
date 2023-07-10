@@ -1,5 +1,7 @@
 package com.tr.chat.controller;
 
+
+import com.alibaba.fastjson.JSONObject;
 import com.tr.chat.controller.method.GetController;
 import com.tr.chat.entity.Resp;
 import com.tr.chat.service.MessageService;
@@ -26,7 +28,7 @@ public class MessageController implements GetController {
 
     @GetMapping(path)
     @Override
-    public Resp doGet(Map<Object, String> map, HttpServletRequest request) {
+    public Resp doGet(Map<Object,Object> map, HttpServletRequest request) {
         resp.success(messageService.handle(map,request),"成功");
         return resp;
     }

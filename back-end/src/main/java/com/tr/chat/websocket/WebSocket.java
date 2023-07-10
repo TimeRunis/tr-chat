@@ -1,13 +1,12 @@
 package com.tr.chat.websocket;
 
 import com.alibaba.fastjson.JSON;
-import com.tr.chat.entity.Group;
-import com.tr.chat.entity.GroupUser;
-import com.tr.chat.entity.Message;
-import com.tr.chat.entity.User;
+import com.tr.chat.entity.*;
+import com.tr.chat.mapper.ContactMapper;
 import com.tr.chat.mapper.GroupMapper;
 import com.tr.chat.mapper.MessageMapper;
 import com.tr.chat.util.LoggerUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocket {
     private static MessageMapper messageMapper;
     private static GroupMapper groupMapper;
+    private static ContactMapper contactMapper;
 
     private static ConcurrentHashMap<String, WebSocket> webSocketMap = new ConcurrentHashMap<>();
     //实例一个session，这个session是websocket的session
@@ -47,33 +47,42 @@ public class WebSocket {
             if (webSocket != null) {
                 try {
                     webSocket.session.getBasicRemote().sendText(JSON.toJSONString(message));
-                    LoggerUtil.info("[服务端]发送消息给用户{"+message.getToUserId()+"},消息内容{"+message.toString()+"}");
+                    LoggerUtil.info("[服务端]发送消息给用户{"+message.getToUserId()+"},消息内容{"+ message +"}");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }else {
+                //离线用户增加未读消息
+                Contact contact = contactMapper.getByOwnerFromUser(String.valueOf(message.getToUserId()), String.valueOf(message.getFromUser().getId()));
+                contact.setUnread(contact.getUnread()+1);
+                contactMapper.updateById(contact);
             }
-        }else {
-            sendMessage("消息发送失败",String.valueOf(message.getFromUserId()));
         }
     }
 
     //新增一个方法用于群聊消息推送
     public static void pushGroupMessage(Message message) {
         if(message!=null){
+            //查询群组信息
             Group group=  groupMapper.getGroupInfoById(String.valueOf(message.getToGroupId()));
             for(GroupUser user:group.getUserList()){
+                //遍历群组所属成员来进行推送
                 WebSocket webSocket = webSocketMap.get(String.valueOf(user.getUser().getId()));
+                //在线用户实时推送
                 if (webSocket != null) {
                     try {
                         webSocket.session.getBasicRemote().sendText(JSON.toJSONString(message));
-                        LoggerUtil.info("[服务端]发送消息给用户{"+message.getToUserId()+"},消息内容{"+message.toString()+"}");
+                        LoggerUtil.info("[服务端]发送消息给用户{"+message.getToUserId()+"},消息内容{"+ message +"}");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                }else{
+                    //离线用户增加未读消息
+                    Contact contact = contactMapper.getByOwnerFromGroup(String.valueOf(user.getUser().getId()),String.valueOf(group.getId()));
+                    contact.setUnread(contact.getUnread()+1);
+                    contactMapper.updateById(contact);
                 }
             }
-        }else {
-            sendMessage("消息发送失败",String.valueOf(message.getFromUserId()));
         }
     }
 
@@ -88,6 +97,7 @@ public class WebSocket {
     public static void setApplicationContext(ApplicationContext applicationContext) {
         WebSocket.messageMapper=applicationContext.getBean(MessageMapper.class);
         WebSocket.groupMapper=applicationContext.getBean(GroupMapper.class);
+        WebSocket.contactMapper=applicationContext.getBean(ContactMapper.class);
     }
 
     //前端请求时一个websocket时
@@ -116,14 +126,18 @@ public class WebSocket {
     public void onMessage(String message,Session session) throws IOException {
         if (!message.equals("HeartBeat")) {
             try{
+                //消息体转java对象
                 Message tMessage=JSON.parseObject(message, Message.class);
+                //插入消息
                 messageMapper.insert(tMessage);
+                //从数据库查询数据
                 if(tMessage.getToUserId()!=null){
                     pushPrivateMessage(messageMapper.getById(tMessage.getId()));
                 }else {
                     pushGroupMessage(messageMapper.getById(tMessage.getId()));
                 }
-
+                //告诉客户端已收到消息
+                sendMessage("ok",String.valueOf(tMessage.getFromUserId()));
                 LoggerUtil.info("[服务端]收到客户端发来的消息:"+tMessage);
             }catch (Exception ignored){
 

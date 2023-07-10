@@ -2,10 +2,12 @@ package com.tr.chat.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 import sun.reflect.Reflection;
 
 import java.util.Date;
 
+@Component
 public class LoggerUtil {
     private static boolean isLog = true;
     private static Logger logger = null;

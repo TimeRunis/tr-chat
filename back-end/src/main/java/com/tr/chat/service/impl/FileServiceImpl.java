@@ -1,36 +1,30 @@
-package com.sass.studentactivityscoresystem.service.Impl;
+package com.tr.chat.service.impl;
 
-import com.sass.studentactivityscoresystem.entity.ReturnBody;
-import com.sass.studentactivityscoresystem.service.FileUploadService;
+
+import com.tr.chat.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
-public class FileUploadServiceImpl implements FileUploadService {
-    private ReturnBody returnBody;
-
-    @Autowired
-    public FileUploadServiceImpl(ReturnBody returnBody) {
-        this.returnBody = returnBody;
-    }
+public class FileServiceImpl implements FileService {
 
     @Override
-    public ReturnBody upload(MultipartFile[] files,String path, List<String> fileName) {
+    public int upload(MultipartFile[] files,String path, List<String> fileName) {
         File folder = new File(path);
         //文件夹不存在
         if(!folder.isDirectory()){
             folder.mkdirs();
             for(int i=0;i<fileName.size();i++){
                 try{
-                    System.out.println("路径:"+path);
-                    System.out.println("文件名:"+fileName.get(i));
                     files[i].transferTo(new File(path, fileName.get(i)));
                 }catch (Exception e){
-                    returnBody.setBody(-1,null);
+                    return -1;
                 }
             }
         }else {
@@ -39,11 +33,15 @@ public class FileUploadServiceImpl implements FileUploadService {
                 try{
                     files[i].transferTo(new File(path, fileName.get(i)));
                 }catch (Exception e){
-                    returnBody.setBody(-1,null);
+                    return -1;
                 }
             }
         }
-        returnBody.setBody(0,null);
-        return returnBody;
+        return 0;
+    }
+
+    @Override
+    public File get(Long date, String md5,String fileName,String path) {
+        return new File(path+new SimpleDateFormat("yyyy/MM/dd/").format(new Date(date*1000))+md5+"-"+fileName);
     }
 }

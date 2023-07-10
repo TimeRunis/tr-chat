@@ -10,16 +10,18 @@ public class Resp implements Serializable {
     Object data;
     String msg;
 
-    public void success(Object data, String msg) {
+    public Resp success(Object data, String msg) {
         this.code=RespCode.SUCCESS.getCode();
         this.data=data;
         this.msg=msg;
+        return this;
     }
 
-    public void error(Object data, String msg) {
+    public Resp error(Object data, String msg) {
         this.code=RespCode.ERROR.getCode();
         this.data=data;
         this.msg=msg;
+        return this;
     }
 
     public Integer getCode() {

@@ -7,5 +7,5 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface DeleteController {
-    Resp doDelete(@RequestParam Map<Object,String> map, HttpServletRequest request);
+    Resp doDelete(@RequestParam Map<Object,Object> map, HttpServletRequest request);
 }

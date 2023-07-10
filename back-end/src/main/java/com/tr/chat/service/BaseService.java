@@ -1,5 +1,7 @@
 package com.tr.chat.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,7 +29,7 @@ public class BaseService<T> extends ServiceImpl<BaseMapper<T>,T> implements ISer
         return strategyMap.get(strategyMap.keySet().iterator().next());
     }
 
-    public Object handle(Map<Object, String> map, HttpServletRequest request) {
+    public Object handle(Map<Object,Object> map, HttpServletRequest request) {
         // 根据strategyName获取对应的策略
         BaseStrategy<T> strategy = key2StrategyName(request.getMethod()+map.get("type"));
         LoggerUtil.info("\n获取到字段:"+request.getMethod()+map.get("type")+"\n使用策略:"+strategy.toString());

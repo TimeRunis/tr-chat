@@ -1,5 +1,6 @@
 package com.tr.chat.strategy.impl.message;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tr.chat.entity.Message;
@@ -13,8 +14,8 @@ import java.util.Map;
 @Component("GETPrivateMsgStrategy")
 public class GetPrivateMsgStrategy implements MessageStrategy {
     @Override
-    public Object handle(Map<Object, String> map, HttpServletRequest request, BaseMapper<Message> mapper) {
-        Page<Message> page = new Page<>(Long.parseLong(map.get("current")), Long.parseLong(map.get("size")));
-        return ((MessageMapper)mapper).getPrivateMsg(map.get("toId"),map.get("fromId"),page);
+    public Object handle(Map<Object,Object> map, HttpServletRequest request, BaseMapper<Message> mapper) {
+        Page<Message> page = new Page<>(Long.parseLong((String) map.get("current")),Long.parseLong((String) map.get("size")));
+        return ((MessageMapper)mapper).getPrivateMsg((String) map.get("toId"), (String) map.get("fromId"),page);
     }
 }

@@ -2,7 +2,9 @@ package com.tr.chat.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 
-public class GroupUser {
+import java.io.Serializable;
+
+public class GroupUser implements Serializable {
     @TableField(exist = false)
     User user;
 

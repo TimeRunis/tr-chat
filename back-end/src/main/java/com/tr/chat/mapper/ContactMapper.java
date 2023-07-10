@@ -44,4 +44,43 @@ public interface ContactMapper extends BaseMapper<Contact> {
             }
     )
     Page<Contact> getPageByOwner(String id,Page<Contact> page);
+
+    @Select("select * from contact_info where owner_id=#{id} and user_id=#{fromId}")
+    @Results(
+            {
+                    @Result(column = "id",property = "id"),
+                    @Result(column = "user_id",property = "user",javaType = User.class,
+                            one=@One(select = "com.tr.chat.mapper.UserMapper.selectById")
+                    ),
+                    @Result(column = "group_id",property = "group",javaType = Group.class,
+                            one=@One(select = "com.tr.chat.mapper.GroupMapper.selectById")
+                    ),
+                    @Result(column = "unread",property = "unread"),
+                    @Result(column = "owner_id",property = "owner",javaType = User.class,
+                            one=@One(select = "com.tr.chat.mapper.UserMapper.selectById")
+                    )
+            }
+    )
+    Contact getByOwnerFromUser(String id,String fromId);
+
+    @Select("select * from contact_info where owner_id=#{id} and group_id=#{fromId}")
+    @Results(
+            {
+                    @Result(column = "id",property = "id"),
+                    @Result(column = "user_id",property = "user",javaType = User.class,
+                            one=@One(select = "com.tr.chat.mapper.UserMapper.selectById")
+                    ),
+                    @Result(column = "group_id",property = "group",javaType = Group.class,
+                            one=@One(select = "com.tr.chat.mapper.GroupMapper.selectById")
+                    ),
+                    @Result(column = "unread",property = "unread"),
+                    @Result(column = "owner_id",property = "owner",javaType = User.class,
+                            one=@One(select = "com.tr.chat.mapper.UserMapper.selectById")
+                    )
+            }
+    )
+    Contact getByOwnerFromGroup(String id,String fromId);
+
+    @Update("update contact_info set unread=#{unread} where id=#{id}")
+    Integer updateContact(String id,String unread);
 }

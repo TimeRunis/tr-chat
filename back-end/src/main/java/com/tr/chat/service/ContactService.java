@@ -1,8 +1,11 @@
 package com.tr.chat.service;
 
+
+import com.alibaba.fastjson.JSONObject;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface ContactService{
-    Object handle(Map<Object, String> map, HttpServletRequest request);
+    Object handle(Map<Object,Object> map, HttpServletRequest request);
 }
