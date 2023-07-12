@@ -3,6 +3,7 @@ package com.tr.chat.controller;
 import com.tr.chat.entity.Resp;
 import com.tr.chat.service.FileService;
 import com.tr.chat.util.LoggerUtil;
+import org.apache.catalina.connector.ClientAbortException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -67,8 +68,7 @@ public class FileController {
             resp.error(null,"未找到文件");
             return resp;
         } catch (IOException e) {
-            e.printStackTrace();
-            resp.error(null,"未知错误");
+            resp.error(null,"IO错误");
             return resp;
         } finally {
             try {

@@ -16,19 +16,13 @@ import java.util.Map;
 
 @Component("PUTContactStrategy")
 public class UpdateContactStrategy implements ContactStrategy {
-    ContactMapper contactMapper;
-
-    @Autowired
-    public UpdateContactStrategy(ContactMapper contactMapper) {
-        this.contactMapper = contactMapper;
-    }
 
     @Override
-    public Object handle(Map<Object,Object> map, HttpServletRequest request, BaseMapper<Contact> mapper) {
+    public Object handle(Map<Object,Object> map, BaseMapper<Contact> mapper, Object... objects) {
         try {
             List<Map<Object,String>> list = (List<Map<Object,String>>) map.get("list");
             for(Map<Object,String> jsonMap:list){
-                contactMapper.updateContact(String.valueOf(jsonMap.get("id")),String.valueOf(jsonMap.get("unread")));
+                ((ContactMapper)mapper).updateContact(String.valueOf(jsonMap.get("id")),String.valueOf(jsonMap.get("unread")));
             }
             return new Resp().success(list,"成功");
         }catch (Exception e){

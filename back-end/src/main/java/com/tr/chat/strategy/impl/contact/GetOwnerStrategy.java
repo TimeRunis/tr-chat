@@ -23,7 +23,7 @@ public class GetOwnerStrategy implements ContactStrategy {
     }
 
     @Override
-    public Object handle(Map<Object,Object> map, HttpServletRequest request, BaseMapper<Contact> mapper) {
+    public Object handle(Map<Object,Object> map, BaseMapper<Contact> mapper, Object... objects) {
         Page<Contact> page = new Page<>(Long.parseLong((String) map.get("current")), Long.parseLong((String) map.get("size")));
         page=((ContactMapper)mapper).getPageByOwner((String) map.get("id"),page);
         for(Contact contact:page.getRecords()){

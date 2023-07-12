@@ -7,5 +7,5 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 public interface ContactService{
-    Object handle(Map<Object,Object> map, HttpServletRequest request);
+    Object handle(Map<Object,Object> map,Object ...objects);
 }

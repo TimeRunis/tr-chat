@@ -13,7 +13,7 @@ import java.util.Map;
 @Component("GETContactStrategy")
 public class GetContactStrategy implements ContactStrategy {
     @Override
-    public Object handle(Map<Object,Object> map, HttpServletRequest request, BaseMapper<Contact> mapper) {
+    public Object handle(Map<Object,Object> map, BaseMapper<Contact> mapper,Object... objects) {
         Page<Contact> page= new Page<>(1, 10);
         return  ((ContactMapper) mapper).getPageById((String) map.get("id"),page);
     }

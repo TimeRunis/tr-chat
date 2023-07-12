@@ -14,4 +14,5 @@ public class MessageServiceImpl extends BaseService<Message> implements MessageS
     public MessageServiceImpl(Map<String, BaseStrategy<Message>> stringBaseStrategyMap) {
         super(stringBaseStrategyMap);
     }
+
 }

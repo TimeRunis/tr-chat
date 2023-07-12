@@ -9,4 +9,5 @@ public @interface CacheConfig {
     long expire() default 60 * 1000;
 
     String name() default "";
+
 }

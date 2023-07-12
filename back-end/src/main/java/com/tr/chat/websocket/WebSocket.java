@@ -5,8 +5,8 @@ import com.tr.chat.entity.*;
 import com.tr.chat.mapper.ContactMapper;
 import com.tr.chat.mapper.GroupMapper;
 import com.tr.chat.mapper.MessageMapper;
+import com.tr.chat.service.MessageService;
 import com.tr.chat.util.LoggerUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +14,16 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ServerEndpoint(value = "/wsChat/{userId}")
 @Component
 public class WebSocket {
     private static MessageMapper messageMapper;
+    private static MessageService messageService;
     private static GroupMapper groupMapper;
     private static ContactMapper contactMapper;
 
@@ -60,6 +64,7 @@ public class WebSocket {
         }
     }
 
+
     //新增一个方法用于群聊消息推送
     public static void pushGroupMessage(Message message) {
         if(message!=null){
@@ -96,6 +101,7 @@ public class WebSocket {
 
     public static void setApplicationContext(ApplicationContext applicationContext) {
         WebSocket.messageMapper=applicationContext.getBean(MessageMapper.class);
+        WebSocket.messageService=applicationContext.getBean(MessageService.class);
         WebSocket.groupMapper=applicationContext.getBean(GroupMapper.class);
         WebSocket.contactMapper=applicationContext.getBean(ContactMapper.class);
     }
@@ -129,12 +135,15 @@ public class WebSocket {
                 //消息体转java对象
                 Message tMessage=JSON.parseObject(message, Message.class);
                 //插入消息
-                messageMapper.insert(tMessage);
+                Map<Object,Object> map=new HashMap<>();
+                map.put("name","InsertMsg");
+                map.put("msg",tMessage);
+                messageService.handle(map);
                 //从数据库查询数据
                 if(tMessage.getToUserId()!=null){
-                    pushPrivateMessage(messageMapper.getById(tMessage.getId()));
+                    pushPrivateMessage(tMessage);
                 }else {
-                    pushGroupMessage(messageMapper.getById(tMessage.getId()));
+                    pushGroupMessage(tMessage);
                 }
                 //告诉客户端已收到消息
                 sendMessage("ok",String.valueOf(tMessage.getFromUserId()));

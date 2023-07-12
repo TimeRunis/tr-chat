@@ -36,5 +36,9 @@ upload:
   path: E:/uploads/
 #缓存配置
 cache:
-  open: false
+  open: true
   name: Redis
+  clock:
+    #使用cron表达式
+    private: "*/10 * * * * ?"
+    group: "*/5 * * * * ?"
